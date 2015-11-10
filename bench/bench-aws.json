@@ -1,15 +1,16 @@
 {
     "variables": {
-        "aws_access_key": "",
-        "aws_secret_key": "",
-        "source_ami": "ami-018c9568"
+        "aws_access_key": "AKIAIAQM2TUBUZGN3WEQ",
+        "aws_secret_key": "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",
+        "source_ami": "ami-da2af3a9",
+        "aws_region": "eu-west-1"
     },
     "builders": [
         {
         "type": "amazon-ebs",
         "access_key": "{{ user `aws_access_key` }}",
         "secret_key": "{{ user `aws_secret_key` }}",
-        "region": "us-east-1",
+        "region": "{{ user `aws_region` }}",
         "instance_type": "m1.small",
         "source_ami": "{{ user `source_ami` }}",
         "ssh_username": "ubuntu",
@@ -20,7 +21,7 @@
         "type": "amazon-ebs",
         "access_key": "{{ user `aws_access_key` }}",
         "secret_key": "{{ user `aws_secret_key` }}",
-        "region": "us-east-1",
+        "region": "{{ user `aws_region` }}",
         "instance_type": "m1.small",
         "source_ami": "{{ user `source_ami` }}",
         "ami_name": "bench-server-{{ timestamp }}",
@@ -31,7 +32,7 @@
         "type": "amazon-ebs",
         "access_key": "{{ user `aws_access_key` }}",
         "secret_key": "{{ user `aws_secret_key` }}",
-        "region": "us-east-1",
+        "region": "{{ user `aws_region` }}",
         "instance_type": "m1.small",
         "source_ami": "{{ user `source_ami` }}",
         "ami_name": "bench-worker-{{ timestamp }}",
@@ -52,9 +53,9 @@
             "mkdir /tmp/consul.d",
             "sudo mkdir /etc/consul.d",
             "sudo apt-get update",
-            "sudo apt-get install unzip make",
+            "sudo apt-get --yes install unzip make upstart-sysv",
             "wget https://dl.bintray.com/mitchellh/consul/0.5.2_linux_amd64.zip",
-            "unzip 0.4.1_linux_amd64.zip",
+            "unzip 0.5.2_linux_amd64.zip",
             "sudo mv consul /usr/local/bin/consul",
             "chmod +x /usr/local/bin/consul"
         ]
@@ -86,7 +87,8 @@
         "inline": [
             "sudo curl https://s3.amazonaws.com/hc-ops/boom_linux_amd64 -o /usr/local/bin/boom",
             "sudo chmod +x /usr/local/bin/boom",
-            "sudo mv /tmp/consul.d /etc/consul.d"
+            "sudo mv /tmp/consul.d/* /etc/consul.d",
+            "sudo mv /tmp/Makefile /Makefile"
         ]
     }
     ]
